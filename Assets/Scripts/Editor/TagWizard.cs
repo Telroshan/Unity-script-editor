@@ -6,12 +6,13 @@ namespace Editor
 {
     public class TagWizard : ScriptableWizard
     {
-        private string _tag;
+        private string _tag = "Your tag here...";
 
         [MenuItem("Tools/Select All Of Tag Wizard")]
         public static void SelectAllOfTagWizard()
         {
-            DisplayWizard<TagWizard>("Tag Wizard");
+            TagWizard tagWizard = DisplayWizard<TagWizard>("Tag Wizard");
+            tagWizard.minSize = new Vector2(300f, 200f);
         }
 
         private void OnGUI()
@@ -19,6 +20,7 @@ namespace Editor
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("Search tag");
             _tag = EditorGUILayout.TextField(_tag);
+            _tag = EditorGUILayout.TagField(_tag);
             EditorGUILayout.EndHorizontal();
 
             if (GUILayout.Button("Make selection"))
