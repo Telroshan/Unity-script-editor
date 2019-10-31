@@ -16,7 +16,7 @@ namespace ScriptEditor.Editor
         private Vector2 _scrollPos;
 
         private string _feedbackMessage;
-        private GUIStyle _feedbackStyle = new GUIStyle(EditorStyles.label);
+        private GUIStyle _feedbackStyle;
         private Color DefaultLabelColor => EditorStyles.label.normal.textColor;
 
         private void OnEnable()
@@ -42,6 +42,8 @@ namespace ScriptEditor.Editor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+            
+            _feedbackStyle = new GUIStyle(EditorStyles.label);
 
             GUIStyle editButtonStyle = new GUIStyle(EditorStyles.miniButton)
             {
@@ -75,8 +77,19 @@ namespace ScriptEditor.Editor
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 File.WriteAllBytes(path, Encoding.UTF8.GetBytes(_scriptContent));
                 AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-
-                SetFeedbackMessage("Saved script !", new Color(0.11f, 0.45f, 0.11f));
+                Application.logMessageReceived += (condition, trace, type) =>
+                {
+                    switch (type)
+                    {
+                        case LogType.Error:
+                            SetFeedbackMessage("There are some compile errors ! (" + trace + ")",
+                                new Color(0.45f, 0.04f, 0.05f));
+                            break;
+                        default:
+                            SetFeedbackMessage("Saved script !", new Color(0.11f, 0.45f, 0.11f));
+                            break;
+                    }
+                };
             }
 
             if (GUILayout.Button(GetButtonGuiContent("d_TreeEditor.Trash", "Discard",
