@@ -23,9 +23,10 @@ namespace ScriptEditor.Editor
             _scriptContent = _monoScript.text;
         }
 
-        private GUIContent GetButtonGuiContent(string iconName, string text)
+        private GUIContent GetButtonGuiContent(string iconName, string text, string tooltip)
         {
-            GUIContent guiContent = new GUIContent(EditorGUIUtility.IconContent(iconName)) {text = text};
+            GUIContent guiContent = new GUIContent(EditorGUIUtility.IconContent(iconName))
+                {text = text, tooltip = tooltip};
             return guiContent;
         }
 
@@ -39,7 +40,10 @@ namespace ScriptEditor.Editor
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 20,
             };
-            if (!_displayed && GUILayout.Button(GetButtonGuiContent("d_editicon.sml", "Edit"), editButtonStyle))
+            if (!_displayed &&
+                GUILayout.Button(
+                    GetButtonGuiContent("d_editicon.sml", "Edit",
+                        "Click here to be able to edit your script directly in this inspector"), editButtonStyle))
             {
                 _displayed = true;
             }
@@ -53,7 +57,7 @@ namespace ScriptEditor.Editor
             EditorGUILayout.EndScrollView();
 
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button(GetButtonGuiContent("SaveActive", "Save")))
+            if (GUILayout.Button(GetButtonGuiContent("SaveActive", "Save", "Apply your changes to the script")))
             {
                 string guid = AssetDatabase.FindAssets(target.GetType().Name).FirstOrDefault();
                 string path = AssetDatabase.GUIDToAssetPath(guid);
@@ -61,13 +65,15 @@ namespace ScriptEditor.Editor
                 AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
             }
 
-            if (GUILayout.Button(GetButtonGuiContent("d_TreeEditor.Trash", "Discard")))
+            if (GUILayout.Button(GetButtonGuiContent("d_TreeEditor.Trash", "Discard",
+                "Reverts your changes back to the original script")))
             {
                 _scriptContent = _monoScript.text;
                 EditorGUI.FocusTextInControl(null);
             }
 
-            if (GUILayout.Button(GetButtonGuiContent("ViewToolZoom", "Select")))
+            if (GUILayout.Button(GetButtonGuiContent("ViewToolZoom", "Select",
+                "Highlight the script in the project window")))
             {
                 EditorGUIUtility.PingObject(_monoScript);
             }
