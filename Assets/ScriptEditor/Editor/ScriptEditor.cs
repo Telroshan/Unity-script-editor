@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Windows;
-using Object = UnityEngine.Object;
 
 namespace ScriptEditor.Editor
 {
@@ -15,6 +13,8 @@ namespace ScriptEditor.Editor
         private string _infoMessage;
         private MonoScript _monoScript;
         private bool _displayed;
+
+        private Vector2 _scrollPos;
 
         private void OnEnable()
         {
@@ -33,20 +33,24 @@ namespace ScriptEditor.Editor
         {
             base.OnInspectorGUI();
 
-            GUIStyle buttonStyle = new GUIStyle(EditorStyles.miniButton)
+            GUIStyle editButtonStyle = new GUIStyle(EditorStyles.miniButton)
             {
                 fixedHeight = 50f,
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 20,
             };
-            if (!_displayed && GUILayout.Button(GetButtonGuiContent("d_editicon.sml", "Edit"), buttonStyle))
+            if (!_displayed && GUILayout.Button(GetButtonGuiContent("d_editicon.sml", "Edit"), editButtonStyle))
             {
                 _displayed = true;
             }
 
             if (!_displayed) return;
 
-            _scriptContent = EditorGUILayout.TextArea(_scriptContent);
+            _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos,
+                GUILayout.Width(EditorGUIUtility.currentViewWidth - 25),
+                GUILayout.MaxHeight(300));
+            _scriptContent = EditorGUILayout.TextArea(_scriptContent, GUILayout.ExpandHeight(true));
+            EditorGUILayout.EndScrollView();
 
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button(GetButtonGuiContent("SaveActive", "Save")))
@@ -65,7 +69,6 @@ namespace ScriptEditor.Editor
 
             if (GUILayout.Button(GetButtonGuiContent("ViewToolZoom", "Select")))
             {
-//                Selection.objects = new[] {(Object) _monoScript};
                 EditorGUIUtility.PingObject(_monoScript);
             }
 
