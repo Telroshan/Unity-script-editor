@@ -13,8 +13,11 @@ namespace ScriptEditor.Editor
         private string _infoMessage;
         private MonoScript _monoScript;
         private bool _displayed;
-
         private Vector2 _scrollPos;
+
+        private string _feedbackMessage;
+        private GUIStyle _feedbackStyle = new GUIStyle(EditorStyles.label);
+        private Color DefaultLabelColor => EditorStyles.label.normal.textColor;
 
         private void OnEnable()
         {
@@ -28,6 +31,12 @@ namespace ScriptEditor.Editor
             GUIContent guiContent = new GUIContent(EditorGUIUtility.IconContent(iconName))
                 {text = text, tooltip = tooltip};
             return guiContent;
+        }
+
+        private void SetFeedbackMessage(string value, Color color)
+        {
+            _feedbackMessage = value;
+            _feedbackStyle.normal.textColor = color;
         }
 
         public override void OnInspectorGUI()
@@ -45,6 +54,7 @@ namespace ScriptEditor.Editor
                     GetButtonGuiContent("d_editicon.sml", "Edit",
                         "Click here to be able to edit your script directly in this inspector"), editButtonStyle))
             {
+                SetFeedbackMessage(null, DefaultLabelColor);
                 _displayed = true;
             }
 
@@ -56,6 +66,8 @@ namespace ScriptEditor.Editor
             _scriptContent = EditorGUILayout.TextArea(_scriptContent, GUILayout.ExpandHeight(true));
             EditorGUILayout.EndScrollView();
 
+            EditorGUILayout.LabelField(_feedbackMessage, _feedbackStyle);
+
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button(GetButtonGuiContent("SaveActive", "Save", "Apply your changes to the script")))
             {
@@ -63,6 +75,8 @@ namespace ScriptEditor.Editor
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 File.WriteAllBytes(path, Encoding.UTF8.GetBytes(_scriptContent));
                 AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+
+                SetFeedbackMessage("Saved script !", new Color(0.11f, 0.45f, 0.11f));
             }
 
             if (GUILayout.Button(GetButtonGuiContent("d_TreeEditor.Trash", "Discard",
@@ -70,12 +84,14 @@ namespace ScriptEditor.Editor
             {
                 _scriptContent = _monoScript.text;
                 EditorGUI.FocusTextInControl(null);
+                SetFeedbackMessage("Changes discarded", DefaultLabelColor);
             }
 
             if (GUILayout.Button(GetButtonGuiContent("ViewToolZoom", "Select",
                 "Highlight the script in the project window")))
             {
                 EditorGUIUtility.PingObject(_monoScript);
+                SetFeedbackMessage("Script Highlighted", DefaultLabelColor);
             }
 
             EditorGUILayout.EndHorizontal();
