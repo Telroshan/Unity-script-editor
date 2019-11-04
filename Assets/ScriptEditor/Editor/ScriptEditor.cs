@@ -97,7 +97,7 @@ namespace ScriptEditor.Editor
             {
                 _scriptContent = EditorGUILayout.TextArea(_scriptContent, GUILayout.ExpandHeight(true));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // TODO : For some reason, I get a NullReferenceException sometimes in the TextArea, even though all is set
                 // ignored
