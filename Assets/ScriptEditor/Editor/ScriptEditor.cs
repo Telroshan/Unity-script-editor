@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -92,7 +93,16 @@ namespace ScriptEditor.Editor
             _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos,
                 GUILayout.Width(EditorGUIUtility.currentViewWidth - 25),
                 GUILayout.MaxHeight(300));
-            _scriptContent = EditorGUILayout.TextArea(_scriptContent, GUILayout.ExpandHeight(true));
+            try
+            {
+                _scriptContent = EditorGUILayout.TextArea(_scriptContent, GUILayout.ExpandHeight(true));
+            }
+            catch (Exception e)
+            {
+                // TODO : For some reason, I get a NullReferenceException sometimes in the TextArea, even though all is set
+                // ignored
+            }
+
             EditorGUILayout.EndScrollView();
         }
 
