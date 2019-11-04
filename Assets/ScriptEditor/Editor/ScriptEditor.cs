@@ -42,8 +42,8 @@ namespace ScriptEditor.Editor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            
-            _feedbackStyle = new GUIStyle(EditorStyles.label);
+
+            _feedbackStyle = new GUIStyle(EditorStyles.label) {wordWrap = true};
 
             GUIStyle editButtonStyle = new GUIStyle(EditorStyles.miniButton)
             {
@@ -82,7 +82,7 @@ namespace ScriptEditor.Editor
                     switch (type)
                     {
                         case LogType.Error:
-                            SetFeedbackMessage("There are some compile errors ! (" + trace + ")",
+                            SetFeedbackMessage("There are some compile errors ! (" + condition + ")",
                                 new Color(0.45f, 0.04f, 0.05f));
                             break;
                         default:
