@@ -57,7 +57,7 @@ namespace ScriptEditor.Editor
             EditorGUILayout.BeginHorizontal();
             DisplaySaveButton();
             DisplayDiscardButton();
-            DisplayHighlightButton();
+            DisplayCloseButton();
             EditorGUILayout.EndHorizontal();
         }
 
@@ -85,6 +85,7 @@ namespace ScriptEditor.Editor
             {
                 SetFeedbackMessage(null, DefaultLabelColor);
                 _displayed = true;
+                EditorGUIUtility.PingObject(_monoScript);
             }
         }
 
@@ -149,29 +150,33 @@ namespace ScriptEditor.Editor
             }
         }
 
+        private void Discard()
+        {
+            // Get back to the original content
+            _scriptContent = _monoScript.text;
+
+            // Focus out the text area
+            EditorGUI.FocusTextInControl(null);
+        }
+
         private void DisplayDiscardButton()
         {
             if (GUILayout.Button(GetButtonGuiContent("d_TreeEditor.Trash", "Discard",
                 "Reverts your changes back to the original script"), _buttonStyle))
             {
-                // Get back to the original content
-                _scriptContent = _monoScript.text;
-
-                // Focus out the text area
-                EditorGUI.FocusTextInControl(null);
+                Discard();
 
                 SetFeedbackMessage("Changes discarded", DefaultLabelColor);
             }
         }
 
-        private void DisplayHighlightButton()
+        private void DisplayCloseButton()
         {
-            if (GUILayout.Button(GetButtonGuiContent("ViewToolZoom", "Select",
-                "Highlight the script in the project window"), _buttonStyle))
+            if (GUILayout.Button(GetButtonGuiContent("LookDevClose@2x", "Close",
+                "Close the edit area (also discards any unsaved changes)"), _buttonStyle))
             {
-                EditorGUIUtility.PingObject(_monoScript);
-
-                SetFeedbackMessage("Script Highlighted", DefaultLabelColor);
+                Discard();
+                _displayed = false;
             }
         }
     }
