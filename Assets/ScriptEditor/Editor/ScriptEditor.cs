@@ -69,8 +69,11 @@ namespace ScriptEditor.Editor
             EditorGUILayout.LabelField(_feedbackMessage,
                 new GUIStyle(EditorStyles.label) {wordWrap = true, normal = {textColor = _feedbackColor}});
 
+            GUIStyle buttonStyle = new GUIStyle(EditorStyles.miniButton) {fixedHeight = 30f, fontSize = 11};
+
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button(GetButtonGuiContent("SaveActive", "Save", "Apply your changes to the script")))
+            if (GUILayout.Button(GetButtonGuiContent("SaveActive", "Save", "Apply your changes to the script"),
+                buttonStyle))
             {
                 string guid = AssetDatabase.FindAssets(target.GetType().Name).FirstOrDefault();
                 string path = AssetDatabase.GUIDToAssetPath(guid);
@@ -92,7 +95,7 @@ namespace ScriptEditor.Editor
             }
 
             if (GUILayout.Button(GetButtonGuiContent("d_TreeEditor.Trash", "Discard",
-                "Reverts your changes back to the original script")))
+                "Reverts your changes back to the original script"), buttonStyle))
             {
                 _scriptContent = _monoScript.text;
                 EditorGUI.FocusTextInControl(null);
@@ -100,7 +103,7 @@ namespace ScriptEditor.Editor
             }
 
             if (GUILayout.Button(GetButtonGuiContent("ViewToolZoom", "Select",
-                "Highlight the script in the project window")))
+                "Highlight the script in the project window"), buttonStyle))
             {
                 EditorGUIUtility.PingObject(_monoScript);
                 SetFeedbackMessage("Script Highlighted", DefaultLabelColor);
