@@ -16,7 +16,7 @@ namespace ScriptEditor.Editor
         private Vector2 _scrollPos;
 
         private string _feedbackMessage;
-        private GUIStyle _feedbackStyle;
+        private Color _feedbackColor;
         private Color DefaultLabelColor => EditorStyles.label.normal.textColor;
 
         private void OnEnable()
@@ -36,14 +36,12 @@ namespace ScriptEditor.Editor
         private void SetFeedbackMessage(string value, Color color)
         {
             _feedbackMessage = value;
-            _feedbackStyle.normal.textColor = color;
+            _feedbackColor = color;
         }
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-
-            _feedbackStyle = new GUIStyle(EditorStyles.label) {wordWrap = true};
 
             GUIStyle editButtonStyle = new GUIStyle(EditorStyles.miniButton)
             {
@@ -68,7 +66,8 @@ namespace ScriptEditor.Editor
             _scriptContent = EditorGUILayout.TextArea(_scriptContent, GUILayout.ExpandHeight(true));
             EditorGUILayout.EndScrollView();
 
-            EditorGUILayout.LabelField(_feedbackMessage, _feedbackStyle);
+            EditorGUILayout.LabelField(_feedbackMessage,
+                new GUIStyle(EditorStyles.label) {wordWrap = true, normal = {textColor = _feedbackColor}});
 
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button(GetButtonGuiContent("SaveActive", "Save", "Apply your changes to the script")))
