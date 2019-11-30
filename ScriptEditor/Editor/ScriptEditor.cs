@@ -20,7 +20,6 @@ namespace ScriptEditor.Editor
         private Color DefaultLabelColor => EditorStyles.label.normal.textColor;
 
         private GUIStyle _buttonStyle;
-        private GUIStyle _editButtonStyle;
 
         private void OnEnable()
         {
@@ -40,7 +39,12 @@ namespace ScriptEditor.Editor
 
         public override void OnInspectorGUI()
         {
-            SetupStyles();
+            _buttonStyle = new GUIStyle(EditorStyles.miniButton)
+            {
+                fixedHeight = 50f,
+                alignment = TextAnchor.MiddleCenter,
+                fontSize = 20,
+            };
 
             DisplayCodeArea();
             DisplayFeedbackMessage();
@@ -60,26 +64,11 @@ namespace ScriptEditor.Editor
             EditorGUILayout.EndHorizontal();
         }
 
-        private void SetupStyles()
-        {
-            _editButtonStyle = new GUIStyle(EditorStyles.miniButton)
-            {
-                fixedHeight = 50f,
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = 20,
-            };
-            _buttonStyle = new GUIStyle(EditorStyles.miniButton)
-            {
-                fixedHeight = 30f,
-                fontSize = 11,
-            };
-        }
-
         private void DisplayEditButton()
         {
             if (GUILayout.Button(
                 GetButtonGuiContent("d_editicon.sml", "Edit",
-                    "Click here to be able to edit your script directly in this inspector"), _editButtonStyle))
+                    "Click here to be able to edit your script directly in this inspector"), _buttonStyle))
             {
                 SetFeedbackMessage(null, DefaultLabelColor);
                 _edit = true;
