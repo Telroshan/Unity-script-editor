@@ -12,7 +12,6 @@ namespace ScriptEditor.Editor
         private string _scriptContent;
         private string _infoMessage;
         private MonoScript _monoScript;
-        private bool _edit;
         private Vector2 _scrollPos;
 
         private string _feedbackMessage;
@@ -50,29 +49,9 @@ namespace ScriptEditor.Editor
             DisplayFeedbackMessage();
 
             EditorGUILayout.BeginHorizontal();
-
-            if (_edit)
-            {
-                DisplaySaveButton();
-                DisplayDiscardButton();
-            }
-            else
-            {
-                DisplayEditButton();
-            }
-
+            DisplaySaveButton();
+            DisplayDiscardButton();
             EditorGUILayout.EndHorizontal();
-        }
-
-        private void DisplayEditButton()
-        {
-            if (GUILayout.Button(
-                GetButtonGuiContent("d_editicon.sml", "Edit",
-                    "Click here to be able to edit your script directly in this inspector"), _buttonStyle))
-            {
-                SetFeedbackMessage(null, DefaultLabelColor);
-                _edit = true;
-            }
         }
 
         private void DisplayCodeArea()
@@ -82,15 +61,7 @@ namespace ScriptEditor.Editor
                 GUILayout.MaxHeight(500));
             try
             {
-                if (_edit)
-                {
-                    _scriptContent = EditorGUILayout.TextArea(_scriptContent, GUILayout.ExpandHeight(true));
-                }
-                else
-                {
-                    EditorGUILayout.SelectableLabel(_scriptContent, EditorStyles.textArea,
-                        GUILayout.ExpandHeight(true));
-                }
+                _scriptContent = EditorGUILayout.TextArea(_scriptContent, GUILayout.ExpandHeight(true));
             }
             catch (Exception)
             {
@@ -127,8 +98,6 @@ namespace ScriptEditor.Editor
 
                 // Refresh to force recompile
                 AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-
-                _edit = false;
             }
         }
 
@@ -144,8 +113,6 @@ namespace ScriptEditor.Editor
                 EditorGUI.FocusTextInControl(null);
 
                 SetFeedbackMessage("Changes discarded", DefaultLabelColor);
-
-                _edit = false;
             }
         }
     }
