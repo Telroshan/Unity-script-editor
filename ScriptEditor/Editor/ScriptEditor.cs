@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+using System;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -7,7 +6,7 @@ using UnityEngine.Windows;
 
 namespace ScriptEditor.Editor
 {
-    [CustomEditor(typeof(MonoBehaviour), true)]
+    [CustomEditor(typeof(MonoScript))]
     public class ScriptEditor : UnityEditor.Editor
     {
         private string _scriptContent;
@@ -25,9 +24,7 @@ namespace ScriptEditor.Editor
 
         private void OnEnable()
         {
-            // Retrieve script's content
-            MonoBehaviour script = (MonoBehaviour) target;
-            _monoScript = MonoScript.FromMonoBehaviour(script);
+            _monoScript = (MonoScript) target;
             _scriptContent = _monoScript.text;
         }
 
@@ -43,8 +40,6 @@ namespace ScriptEditor.Editor
 
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
-
             SetupStyles();
 
             DisplayEditButton();
@@ -85,7 +80,6 @@ namespace ScriptEditor.Editor
             {
                 SetFeedbackMessage(null, DefaultLabelColor);
                 _displayed = true;
-                EditorGUIUtility.PingObject(_monoScript);
             }
         }
 
@@ -124,8 +118,7 @@ namespace ScriptEditor.Editor
             if (GUILayout.Button(GetButtonGuiContent("SaveActive", "Save", "Apply your changes to the script"),
                 _buttonStyle))
             {
-                string scriptGuid = AssetDatabase.FindAssets(target.GetType().Name).FirstOrDefault();
-                string scriptPath = AssetDatabase.GUIDToAssetPath(scriptGuid);
+                string scriptPath = AssetDatabase.GetAssetPath(target);
 
                 // Write new content into the script file
                 File.WriteAllBytes(scriptPath, Encoding.UTF8.GetBytes(_scriptContent));
