@@ -12,7 +12,7 @@ namespace ScriptEditor.Editor
         private string _scriptContent;
         private string _infoMessage;
         private MonoScript _monoScript;
-        private bool _displayed;
+        private bool _edit;
         private Vector2 _scrollPos;
 
         private string _feedbackMessage;
@@ -42,17 +42,21 @@ namespace ScriptEditor.Editor
         {
             SetupStyles();
 
-            DisplayEditButton();
-
-            if (!_displayed) return;
-
             DisplayCodeArea();
             DisplayFeedbackMessage();
 
             EditorGUILayout.BeginHorizontal();
-            DisplaySaveButton();
-            DisplayDiscardButton();
-            DisplayCloseButton();
+
+            if (_edit)
+            {
+                DisplaySaveButton();
+                DisplayDiscardButton();
+            }
+            else
+            {
+                DisplayEditButton();
+            }
+
             EditorGUILayout.EndHorizontal();
         }
 
@@ -73,13 +77,12 @@ namespace ScriptEditor.Editor
 
         private void DisplayEditButton()
         {
-            if (!_displayed &&
-                GUILayout.Button(
-                    GetButtonGuiContent("d_editicon.sml", "Edit",
-                        "Click here to be able to edit your script directly in this inspector"), _editButtonStyle))
+            if (GUILayout.Button(
+                GetButtonGuiContent("d_editicon.sml", "Edit",
+                    "Click here to be able to edit your script directly in this inspector"), _editButtonStyle))
             {
                 SetFeedbackMessage(null, DefaultLabelColor);
-                _displayed = true;
+                _edit = true;
             }
         }
 
@@ -87,14 +90,22 @@ namespace ScriptEditor.Editor
         {
             _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos,
                 GUILayout.Width(EditorGUIUtility.currentViewWidth - 25),
-                GUILayout.MaxHeight(300));
+                GUILayout.MaxHeight(500));
             try
             {
-                _scriptContent = EditorGUILayout.TextArea(_scriptContent, GUILayout.ExpandHeight(true));
+                if (_edit)
+                {
+                    _scriptContent = EditorGUILayout.TextArea(_scriptContent, GUILayout.ExpandHeight(true));
+                }
+                else
+                {
+                    EditorGUILayout.SelectableLabel(_scriptContent, EditorStyles.textArea,
+                        GUILayout.ExpandHeight(true));
+                }
             }
             catch (Exception)
             {
-                // TODO : For some reason, I get a NullReferenceException sometimes in the TextArea, even though all is set
+                // TODO : For some reason, I get a NullReferenceException sometimes in the TextArea, even though everything is set
                 // ignored
             }
 
@@ -127,16 +138,9 @@ namespace ScriptEditor.Editor
 
                 // Refresh to force recompile
                 AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+
+                _edit = false;
             }
-        }
-
-        private void Discard()
-        {
-            // Get back to the original content
-            _scriptContent = _monoScript.text;
-
-            // Focus out the text area
-            EditorGUI.FocusTextInControl(null);
         }
 
         private void DisplayDiscardButton()
@@ -144,19 +148,15 @@ namespace ScriptEditor.Editor
             if (GUILayout.Button(GetButtonGuiContent("d_TreeEditor.Trash", "Discard",
                 "Reverts your changes back to the original script"), _buttonStyle))
             {
-                Discard();
+                // Get back to the original content
+                _scriptContent = _monoScript.text;
+
+                // Focus out the text area
+                EditorGUI.FocusTextInControl(null);
 
                 SetFeedbackMessage("Changes discarded", DefaultLabelColor);
-            }
-        }
 
-        private void DisplayCloseButton()
-        {
-            if (GUILayout.Button(GetButtonGuiContent("LookDevClose@2x", "Close",
-                "Close the edit area (also discards any unsaved changes)"), _buttonStyle))
-            {
-                Discard();
-                _displayed = false;
+                _edit = false;
             }
         }
     }
