@@ -58,7 +58,7 @@ namespace ScriptEditor.Editor
         {
             _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos,
                 GUILayout.Width(EditorGUIUtility.currentViewWidth - 25),
-                GUILayout.MaxHeight(500));
+                GUILayout.MaxHeight(600));
             try
             {
                 _scriptContent = EditorGUILayout.TextArea(_scriptContent, GUILayout.ExpandHeight(true));
