@@ -123,23 +123,10 @@ namespace ScriptEditor.Editor
                 // Write new content into the script file
                 File.WriteAllBytes(scriptPath, Encoding.UTF8.GetBytes(_scriptContent));
 
+                SetFeedbackMessage("Saved script !", new Color(0.09f, 0.34f, 0.09f));
+
                 // Refresh to force recompile
                 AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-
-                // Intercept logs to display a feedback
-                Application.logMessageReceived += (condition, trace, type) =>
-                {
-                    switch (type)
-                    {
-                        case LogType.Error:
-                            SetFeedbackMessage("There are some compile errors ! (" + condition + ")",
-                                new Color(0.45f, 0.04f, 0.05f));
-                            break;
-                        default:
-                            SetFeedbackMessage("Saved script !", new Color(0.11f, 0.45f, 0.11f));
-                            break;
-                    }
-                };
             }
         }
 
