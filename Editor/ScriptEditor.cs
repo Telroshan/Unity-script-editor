@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Windows;
 
-namespace ScriptEditor.Editor
+namespace TelroshanTools.ScriptEditor.Editor
 {
     [CustomEditor(typeof(MonoScript))]
     public class ScriptEditor : UnityEditor.Editor
