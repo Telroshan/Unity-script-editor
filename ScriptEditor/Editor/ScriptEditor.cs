@@ -48,7 +48,7 @@ namespace ScriptEditor.Editor
             DisplayCodeArea();
             DisplayFeedbackMessage();
 
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal(GUILayout.Width(EditorGUIUtility.currentViewWidth - 37));
             DisplaySaveButton();
             DisplayDiscardButton();
             EditorGUILayout.EndHorizontal();
