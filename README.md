@@ -10,6 +10,8 @@ Instead of the standard readonly preview of your script, you can write there, th
 
 _Note : This tool only applies to monoscripts, thus script assets, so don't worry, it's not going to alter any of your monobehaviour custom editors !_
 
+_Inspired by a project from [LeonBBlack](https://gitlab.com/LeonBBlack) (a.k.a "Benoît le sang")_
+
 ## Install
 ### Unity package (easiest)
 Simply [download the unity package file in the releases](https://github.com/Telroshan/Unity-script-editor/releases/download/1.0/ScriptEditor.unitypackage) and double click it (or import it in Unity)
